@@ -5,12 +5,17 @@ import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.Product;
 import com.sparta.myselectshop.entity.User;
+import com.sparta.myselectshop.entity.UserRoleEnum;
 import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.task.ThreadPoolTaskSchedulerBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +50,14 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    //스트림 사용 코드
+//    @Transactional
+//    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+//        Product product = new Product(requestDto);
+//        product = productRepository.save(product);
+//        return new ProductResponseDto(product);
+//    }
+
 
     @Transactional      //더티체킹 - 변경감지
     public ProductResponseDto updateProduct(Long id, ProductMypriceRequestDto requestDto) {
@@ -74,9 +87,18 @@ public class ProductService {
 //        return responseDtoList;
 
 
-    //스트림 사용 코드
-    public List<ProductResponseDto> getProducts(User user) {
-        return productRepository.findAllByUser(user).stream()
+    public List<ProductResponseDto> getProducts(User user, int page, int size, String sortBy, boolean isAsc) {
+        Sort sort = isAsc ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Product> productPage;
+        if (user.getRole() == UserRoleEnum.ADMIN) {
+            productPage = productRepository.findAll(pageable);
+        } else {
+            productPage = productRepository.findAllByUser(user, pageable);
+        }
+
+        return productPage.stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -94,11 +116,15 @@ public class ProductService {
     }
 
 
+    /*
+    어드민 계정 전체조회 api
+     */
     public List<ProductResponseDto> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
+
 }
 
 
