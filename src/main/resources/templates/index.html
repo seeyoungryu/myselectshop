@@ -5,8 +5,9 @@
     <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-
+    <meta content="00만의 셀렉샵" property="og:title">
+    <meta content="관심상품을 선택하고, 최저가 알림을 확인해보세요!" property="og:description">
+    <meta content="images/og_selectshop.png" property="og:image">
     <link href="/css/style.css" rel="stylesheet">
     <script crossorigin="anonymous"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
@@ -17,9 +18,15 @@
 <body>
 <div class="header" style="position:relative;">
     <!--headr-->
-    <div id="header-title-select-shop">
-        My Select Shop
+    <div id="header-title-login-user">
+        <span id="username"></span> 님의
     </div>
+    <div id="header-title-select-shop">
+        Select Shop
+    </div>
+    <a href="javascript:logout()" id="login-text">
+        로그아웃
+    </a>
     <!--/headr-->
 </div>
 <div class="nav">
@@ -56,5 +63,7 @@
         </div>
     </div>
 </div>
+
+<input id="admin" type="hidden"/>
 </body>
 </html>

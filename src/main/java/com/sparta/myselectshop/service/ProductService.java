@@ -4,6 +4,7 @@ import com.sparta.myselectshop.dto.ProductMypriceRequestDto;
 import com.sparta.myselectshop.dto.ProductRequestDto;
 import com.sparta.myselectshop.dto.ProductResponseDto;
 import com.sparta.myselectshop.entity.Product;
+import com.sparta.myselectshop.entity.User;
 import com.sparta.myselectshop.naver.dto.ItemDto;
 import com.sparta.myselectshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,22 +28,22 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ThreadPoolTaskSchedulerBuilder threadPoolTaskSchedulerBuilder;
 
+//    @Transactional
+//    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+//        logger.info("Creating product with title: {}", requestDto.getTitle());
+//        Product product = new Product(requestDto);
+//        logger.info("Saving product to database");
+//        product = productRepository.save(product);
+//        logger.info("Product saved with id: {}", product.getId());
+//        return new ProductResponseDto(product);
+//    }
+
     @Transactional
-    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-        logger.info("Creating product with title: {}", requestDto.getTitle());
-        Product product = new Product(requestDto);
-        logger.info("Saving product to database");
-        product = productRepository.save(product);
-        logger.info("Product saved with id: {}", product.getId());
+    public ProductResponseDto createProduct(ProductRequestDto requestDto, User user) {
+        Product product = new Product(requestDto, user);
+        product = productRepository.save(new Product(requestDto, user));
         return new ProductResponseDto(product);
     }
-
-    //    @Transactional
-    //    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
-    //        Product product = new Product(requestDto);
-    //        product = productRepository.save(product);
-    //        return new ProductResponseDto(product);
-    //    }
 
 
     @Transactional      //더티체킹 - 변경감지
@@ -74,8 +75,8 @@ public class ProductService {
 
 
     //스트림 사용 코드
-    public List<ProductResponseDto> getProducts() {
-        return productRepository.findAll().stream()
+    public List<ProductResponseDto> getProducts(User user) {
+        return productRepository.findAllByUser(user).stream()
                 .map(ProductResponseDto::new)
                 .collect(Collectors.toList());
     }
@@ -93,6 +94,11 @@ public class ProductService {
     }
 
 
+    public List<ProductResponseDto> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(ProductResponseDto::new)
+                .collect(Collectors.toList());
+    }
 }
 
 

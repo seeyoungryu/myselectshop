@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <script crossorigin="anonymous"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <meta charset="UTF-8">
+    <title>로그인 페이지</title>
+</head>
+<body>
+<div id="login-form">
+    <div id="login-title">Log into Select Shop</div>
+    <br>
+    <button id="login-id-btn" onclick="location.href='/api/user/signup'">
+        회원 가입하기
+    </button>
+    <div>
+        <div class="login-id-label">아이디</div>
+        <input class="login-input-box" id="username" name="username" type="text">
+
+        <div class="login-id-label">비밀번호</div>
+        <input class="login-input-box" id="password" name="password" type="password">
+
+        <button id="login-id-submit" onclick="onLogin()">로그인</button>
+    </div>
+    <div class="alert alert-danger" id="login-failed" role="alert" style="display:none">로그인에 실패하였습니다.</div>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        // 토큰 삭제
+        Cookies.remove('Authorization', {path: '/'});
+    });
+
+    const href = location.href;
+    const queryString = href.substring(href.indexOf("?") + 1)
+    if (queryString === 'error') {
+        const errorDiv = document.getElementById('login-failed');
+        errorDiv.style.display = 'block';
+    }
+
+    const host = 'http://' + window.location.host;
+
+    function onLogin() {
+        let username = $('#username').val();
+        let password = $('#password').val();
+
+        $.ajax({
+            type: "POST",
+            url: `/api/user/login`,
+            contentType: "application/json",
+            data: JSON.stringify({username: username, password: password}),
+        })
+            .done(function (res, status, xhr) {
+                const token = xhr.getResponseHeader('Authorization');
+
+                Cookies.set('Authorization', token, {path: '/'})
+
+                $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+                    jqXHR.setRequestHeader('Authorization', token);
+                });
+
+                window.location.href = host;
+            })
+            .fail(function (jqXHR, textStatus) {
+                alert("Login Fail");
+                window.location.href = host + '/api/user/login-page?error'
+            });
+    }
+</script>
+</html>

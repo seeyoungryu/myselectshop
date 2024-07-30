@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+    <script>
+        function onclickAdmin() {
+            // Get the checkbox
+            var checkBox = document.getElementById("admin-check");
+            // Get the output text
+            var box = document.getElementById("admin-token");
+
+            // If the checkbox is checked, display the output text
+            if (checkBox.checked == true) {
+                box.style.display = "block";
+            } else {
+                box.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+<div id="login-form">
+    <div id="login-title">Sign up Select Shop</div>
+
+    <form action="/api/user/signup" method="post">
+        <div class="login-id-label">Username</div>
+        <input class="login-input-box" name="username" placeholder="Username" type="text">
+
+        <div class="login-id-label">Password</div>
+        <input class="login-input-box" name="password" type="password">
+
+        <div class="login-id-label">E-mail</div>
+        <input class="login-input-box" name="email" placeholder="E-mail" type="text">
+
+        <div>
+            <input id="admin-check" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;" type="checkbox">관리자
+            <input class="login-input-box" id="admin-token" name="adminToken" placeholder="관리자 암호" style="display:none"
+                   type="password">
+        </div>
+        <button id="login-id-submit">회원 가입</button>
+    </form>
+</div>
+</body>
+</html>
