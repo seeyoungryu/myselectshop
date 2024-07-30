@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -38,6 +41,9 @@ public class Product extends Timestamped {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+    @OneToMany(mappedBy = "product")
+    private List<ProductFolder> productFolder = new ArrayList<>();
 
     public Product(ProductRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
