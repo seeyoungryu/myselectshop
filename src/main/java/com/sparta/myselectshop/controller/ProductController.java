@@ -60,4 +60,5 @@ public class ProductController {
     public List<ProductResponseDto> getAllProducts() {
         return productService.getAllProducts();
     }
+
 }
